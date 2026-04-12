@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BARSKY PROTOCOL — Vocabulary Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f0a;
+    --bg2: #0f150f;
+    --bg3: #141c14;
+    --green: #2a4a2a;
+    --green-dim: #1a301a;
+    --gold: #c8a84b;
+    --gold-light: #e8c870;
+    --gold-dim: #7a6330;
+    --red: #8b2020;
+    --red-light: #c84040;
+    --cream: #e8e0c8;
+    --cream-dim: #b0a888;
+    --ink: #1a1a0a;
+    --box1: #c84040;
+    --box2: #c87820;
+    --box3: #c8c020;
+    --box4: #40a840;
+    --box5: #4080c8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Courier Prime', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* Noise texture */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--gold-dim);
+    padding: 20px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, #0c130c 0%, var(--bg) 100%);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-block {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .logo-main {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .logo-sub {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .date-stamp {
+    font-size: 11px;
+    color: var(--cream-dim);
+    letter-spacing: 2px;
+    text-align: right;
+  }
+
+  .day-badge {
+    background: var(--gold);
+    color: var(--ink);
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    text-transform: uppercase;
+  }
+
+  /* MAIN LAYOUT */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 20px 80px;
+  }
+
+  /* SCREENS */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* MISSION BRIEFING (Home) */
+  .mission-header {
+    border: 1px solid var(--gold-dim);
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    position: relative;
+    background: linear-gradient(135deg, var(--bg2), var(--bg3));
+  }
+
+  .mission-header::before {
+    content: '▶ MISSION BRIEFING';
+    position: absolute;
+    top: -9px;
+    left: 20px;
+    background: var(--bg);
+    padding: 0 8px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+  }
+
+  .mission-header::after {
+    content: attr(data-stamp);
+    position: absolute;
+    bottom: 12px;
+    right: 16px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--gold-dim);
+    opacity: 0.6;
+  }
+
+  .mission-title {
+    font-family: 'Special Elite', serif;
+    font-size: 28px;
+    color: var(--gold-light);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .mission-desc {
+    font-size: 12px;
+    color: var(--cream-dim);
+    line-height: 1.7;
+    letter-spacing: 0.5px;
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .stat-box {
+    border: 1px solid;
+    padding: 12px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    background: var(--bg2);
+  }
+
+  .stat-box:hover { transform: translateY(-2px); }
+
+  .stat-box[data-box="1"] { border-color: var(--box1); }
+  .stat-box[data-box="2"] { border-color: var(--box2); }
+  .stat-box[data-box="3"] { border-color: var(--box3); }
+  .stat-box[data-box="4"] { border-color: var(--box4); }
+  .stat-box[data-box="5"] { border-color: var(--box5); }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    color: var(--cream-dim);
+  }
+
+  .stat-num {
+    font-family: 'Oswald', sans-serif;
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 1;
+  }
+
+  .stat-box[data-box="1"] .stat-num { color: var(--box1); }
+  .stat-box[data-box="2"] .stat-num { color: var(--box2); }
+  .stat-box[data-box="3"] .stat-num { color: var(--box3); }
+  .stat-box[data-box="4"] .stat-num { color: var(--box4); }
+  .stat-box[data-box="5"] .stat-num { color: var(--box5); }
+
+  .stat-freq {
+    font-size: 9px;
+    color: var(--cream-dim);
+    margin-top: 4px;
+    opacity: 0.7;
+  }
+
+  /* TODAY SECTION */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--green);
+  }
+
+  .section-title {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .section-count {
+    font-size: 11px;
+    color: var(--cream-dim);
+    letter-spacing: 1px;
+  }
+
+  /* SESSION CARDS */
+  .session-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 30px;
+  }
+
+  .session-item {
+    border: 1px solid var(--green);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .session-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+
+  .session-item.new-words::before { background: var(--gold); }
+  .session-item.review::before { background: var(--box3); }
+  .session-item.completed { opacity: 0.5; }
+  .session-item.completed::after {
+    content: '✓ COMPLETED';
+    position: absolute;
+    right: 16px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--box4);
+  }
+
+  .session-item:hover:not(.completed) {
+    background: var(--bg3);
+    border-color: var(--gold-dim);
+  }
+
+  .session-left { display: flex; flex-direction: column; gap: 4px; }
+
+  .session-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    color: var(--cream);
+    text-transform: uppercase;
+  }
+
+  .session-meta {
+    font-size: 10px;
+    color: var(--cream-dim);
+    letter-spacing: 1px;
+  }
+
+  .session-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-count-badge {
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--gold);
+  }
+
+  .arrow-icon { color: var(--gold-dim); font-size: 14px; }
+
+  /* CTAs */
+  .btn {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .btn-primary:hover {
+    background: var(--gold);
+    color: var(--ink);
+  }
+
+  .btn-danger {
+    border-color: var(--red-light);
+    color: var(--red-light);
+  }
+  .btn-danger:hover {
+    background: var(--red-light);
+    color: var(--cream);
+  }
+
+  .btn-ghost {
+    border-color: var(--green);
+    color: var(--cream-dim);
+  }
+  .btn-ghost:hover {
+    border-color: var(--cream-dim);
+    color: var(--cream);
+  }
+
+  /* STUDY SCREEN */
+  #study-screen {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .study-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+
+  .study-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: var(--gold);
+  }
+
+  .progress-bar-wrap {
+    height: 2px;
+    background: var(--green);
+    margin-bottom: 30px;
+    position: relative;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--gold);
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    position: absolute;
+    right: 0;
+    top: 6px;
+    font-size: 10px;
+    color: var(--cream-dim);
+    letter-spacing: 1px;
+  }
+
+  /* FLIP CARD */
+  .card-scene {
+    perspective: 1200px;
+    margin-bottom: 28px;
+  }
+
+  .flip-card {
+    width: 100%;
+    min-height: 320px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+
+  .flip-card.flipped { transform: rotateY(180deg); }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border: 1px solid var(--gold-dim);
+    padding: 40px 36px;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg2);
+  }
+
+  .card-front { background: linear-gradient(135deg, var(--bg2), var(--bg3)); }
+  .card-back {
+    background: linear-gradient(135deg, var(--bg3), #0f1a0f);
+    transform: rotateY(180deg);
+  }
+
+  .card-corner {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .card-box-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: auto;
+  }
+
+  .box-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  .card-difficulty {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .card-phonetic {
+    font-family: 'Courier Prime', monospace;
+    font-size: 18px;
+    color: var(--cream-dim);
+    margin-top: 4px;
+    letter-spacing: 1px;
+    font-weight: 400;
+  }
+
+  .card-word {
+    font-family: 'Special Elite', serif;
+    font-size: 52px;
+    color: var(--gold-light);
+    line-height: 1;
+    margin: auto 0;
+    letter-spacing: 2px;
+  }
+
+  .card-hint {
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: auto;
+    text-align: center;
+    animation: blink 2s infinite;
+  }
+
+  /* SPEECH BUTTON */
+  .speech-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold-dim);
+    padding: 5px 12px;
+    cursor: pointer;
+    font-family: 'Oswald', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    margin-top: 10px;
+    align-self: flex-start;
+  }
+  .speech-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .speech-btn.speaking {
+    border-color: var(--gold-light);
+    color: var(--gold-light);
+    animation: pulse-glow 0.8s infinite alternate;
+  }
+  @keyframes pulse-glow {
+    from { box-shadow: 0 0 0px var(--gold-dim); }
+    to   { box-shadow: 0 0 8px var(--gold); }
+  }
+  .speech-icon { font-size: 13px; }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .card-translation-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .card-translation {
+    font-family: 'Special Elite', serif;
+    font-size: 36px;
+    color: var(--gold-light);
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+
+  .card-example-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--cream-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+
+  .card-example {
+    font-style: italic;
+    font-size: 14px;
+    color: var(--cream);
+    line-height: 1.6;
+    border-left: 2px solid var(--gold-dim);
+    padding-left: 14px;
+  }
+
+  .card-example em {
+    color: var(--gold-light);
+    font-style: normal;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* ANSWER BUTTONS */
+  .answer-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .answer-btn {
+    padding: 16px;
+    border: 1px solid;
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-correct {
+    border-color: var(--box4);
+    color: var(--box4);
+    background: transparent;
+  }
+  .btn-correct:hover, .btn-correct:active {
+    background: var(--box4);
+    color: var(--ink);
+    transform: scale(1.02);
+  }
+
+  .btn-wrong {
+    border-color: var(--red-light);
+    color: var(--red-light);
+    background: transparent;
+  }
+  .btn-wrong:hover, .btn-wrong:active {
+    background: var(--red-light);
+    color: var(--cream);
+    transform: scale(1.02);
+  }
+
+  .answer-row.hidden { display: none; }
+
+  /* SESSION COMPLETE */
+  .session-complete {
+    border: 1px solid var(--gold-dim);
+    padding: 40px;
+    text-align: center;
+    background: var(--bg2);
+    display: none;
+  }
+
+  .session-complete.visible { display: block; }
+
+  .complete-title {
+    font-family: 'Special Elite', serif;
+    font-size: 36px;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+
+  .complete-sub {
+    font-size: 12px;
+    color: var(--cream-dim);
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+  }
+
+  .complete-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .complete-stat {
+    padding: 16px;
+    border: 1px solid var(--green);
+    background: var(--bg3);
+  }
+
+  .complete-stat-num {
+    font-family: 'Oswald', sans-serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--gold);
+  }
+
+  .complete-stat-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--cream-dim);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* RESET CONFIRM */
+  .reset-section {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .reset-label {
+    font-size: 11px;
+    color: var(--cream-dim);
+    letter-spacing: 1px;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    border: 1px dashed var(--green);
+    padding: 40px;
+    text-align: center;
+    color: var(--cream-dim);
+    font-size: 13px;
+    letter-spacing: 1px;
+    line-height: 2;
+  }
+
+  /* PROGRESS OVERVIEW */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .level-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid var(--green);
+    padding: 10px 14px;
+    background: var(--bg2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .level-row:hover { border-color: var(--gold-dim); }
+
+  .level-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--cream);
+  }
+
+  .level-progress {
+    font-size: 10px;
+    color: var(--cream-dim);
+  }
+
+  /* BACK NAV */
+  .back-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    width: fit-content;
+  }
+
+  .back-nav:hover .back-label { color: var(--gold); }
+
+  .back-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--cream-dim);
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    header { padding: 14px 16px; }
+    .logo-main { font-size: 16px; letter-spacing: 4px; }
+    main { padding: 20px 14px 80px; }
+    .stats-row { grid-template-columns: repeat(5, 1fr); gap: 5px; }
+    .stat-box { padding: 8px 4px; }
+    .stat-num { font-size: 22px; }
+    .stat-freq { display: none; }
+    .card-word { font-size: 38px; }
+    .card-face { padding: 28px 22px; }
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .screen.active > * {
+    animation: fadeInUp 0.4s ease both;
+  }
+
+  .screen.active > *:nth-child(2) { animation-delay: 0.05s; }
+  .screen.active > *:nth-child(3) { animation-delay: 0.1s; }
+  .screen.active > *:nth-child(4) { animation-delay: 0.15s; }
+
+  /* NOTIFICATION */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--bg3);
+    border: 1px solid var(--gold-dim);
+    padding: 14px 20px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--cream);
+    z-index: 9999;
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+    max-width: 280px;
+  }
+  .toast.show { transform: translateX(0); }
+
+  /* BOX COLORS for indicators */
+  .box-1 { background: var(--box1); }
+  .box-2 { background: var(--box2); }
+  .box-3 { background: var(--box3); }
+  .box-4 { background: var(--box4); }
+  .box-5 { background: var(--box5); }
+
+  .today-indicator {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--box4);
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border: 1px solid var(--box4);
+    display: inline-block;
+    margin-left: 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-block">
+    <div class="logo-main">Barsky Protocol</div>
+    <div class="logo-sub">Vocabulary Intelligence System</div>
+  </div>
+  <div class="header-right">
+    <div class="date-stamp" id="header-date"></div>
+    <div class="day-badge" id="header-day"></div>
+  </div>
+</header>
+
+<main>
+  <!-- HOME SCREEN -->
+  <div id="home-screen" class="screen active">
+    <div class="mission-header" data-stamp="CLASSIFICATION: OPERATIVE USE ONLY">
+      <div class="mission-title" id="home-greeting">Good Evening, Agent.</div>
+      <div class="mission-desc" id="home-desc">Your linguistic training continues. The Leitner system tracks your mastery across 5 security boxes. Cards advance with each success — failure sends them to Box 3 for reinforcement. Reach Box 5 to permanently secure a word.</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box" data-box="1" onclick="filterByBox(1)">
+        <div class="stat-label">Box 1</div>
+        <div class="stat-num" id="count-box1">0</div>
+        <div class="stat-freq">Daily</div>
+      </div>
+      <div class="stat-box" data-box="2" onclick="filterByBox(2)">
+        <div class="stat-label">Box 2</div>
+        <div class="stat-num" id="count-box2">0</div>
+        <div class="stat-freq">2 days</div>
+      </div>
+      <div class="stat-box" data-box="3" onclick="filterByBox(3)">
+        <div class="stat-label">Box 3</div>
+        <div class="stat-num" id="count-box3">0</div>
+        <div class="stat-freq">4 days</div>
+      </div>
+      <div class="stat-box" data-box="4" onclick="filterByBox(4)">
+        <div class="stat-label">Box 4</div>
+        <div class="stat-num" id="count-box4">0</div>
+        <div class="stat-freq">7 days</div>
+      </div>
+      <div class="stat-box" data-box="5" onclick="filterByBox(5)">
+        <div class="stat-label">Box 5</div>
+        <div class="stat-num" id="count-box5">0</div>
+        <div class="stat-freq">14 days</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">▶ Today's Operations</div>
+      <div class="section-count" id="today-total"></div>
+    </div>
+
+    <div class="session-list" id="today-sessions"></div>
+
+    <div class="reset-section">
+      <div class="reset-label">Reset all progress and start over</div>
+      <button class="btn btn-danger" onclick="confirmReset()">⚠ Reset Protocol</button>
+    </div>
+  </div>
+
+  <!-- STUDY SCREEN -->
+  <div id="study-screen" class="screen">
+    <div class="back-nav" onclick="goHome()">
+      <span style="color:var(--gold-dim)">◀</span>
+      <span class="back-label">Back to Operations</span>
+    </div>
+
+    <div class="study-header">
+      <div class="study-title" id="study-session-name">SESSION</div>
+      <div style="font-size:11px;color:var(--cream-dim);letter-spacing:1px" id="study-counter">0 / 0</div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+      <div class="progress-label" id="progress-text">0%</div>
+    </div>
+
+    <div class="card-scene" id="card-scene" style="display:none">
+      <div class="flip-card" id="flip-card" onclick="flipCard()">
+        <div class="card-face card-front">
+          <div class="card-corner">▶ VOCABULARY CARD</div>
+          <div class="card-box-indicator">
+            <div class="box-dot" id="front-box-dot"></div>
+            <span style="font-size:10px;color:var(--cream-dim);letter-spacing:1px" id="front-box-label">BOX 1</span>
+            <span style="margin-left:auto" class="card-difficulty" id="front-difficulty"></span>
+          </div>
+          <div class="card-word" id="card-word">WORD</div>
+          <div class="card-phonetic" id="card-phonetic">/phonetic/</div>
+          <button class="speech-btn" id="speech-btn-front" onclick="event.stopPropagation(); speakWord()">
+            <span class="speech-icon">🔊</span> <span id="speech-btn-front-label">PRONOUNCE</span>
+          </button>
+          <div class="card-hint" style="margin-top:12px">tap to reveal ▼</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-corner">▶ CLASSIFIED INTEL</div>
+          <div class="card-box-indicator">
+            <div class="box-dot" id="back-box-dot"></div>
+            <span style="font-size:10px;color:var(--cream-dim);letter-spacing:1px" id="back-box-label">BOX 1</span>
+          </div>
+          <div class="card-translation-label">Translation</div>
+          <div class="card-translation" id="card-translation">—</div>
+          <div class="card-example-label">Field Example</div>
+          <div class="card-example" id="card-example">—</div>
+          <button class="speech-btn" id="speech-btn-back" onclick="event.stopPropagation(); speakExample()" style="margin-top:16px">
+            <span class="speech-icon">🔊</span> READ EXAMPLE
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="answer-row hidden" id="answer-row">
+      <button class="answer-btn btn-wrong" onclick="answerCard(false)">✕ Incorrect</button>
+      <button class="answer-btn btn-correct" onclick="answerCard(true)">✓ Correct</button>
+    </div>
+
+    <div class="session-complete" id="session-complete">
+      <div class="complete-title">Mission Complete</div>
+      <div class="complete-sub" id="complete-sub">Session debriefing</div>
+      <div class="complete-stats">
+        <div class="complete-stat">
+          <div class="complete-stat-num" id="stat-correct">0</div>
+          <div class="complete-stat-label">Correct</div>
+        </div>
+        <div class="complete-stat">
+          <div class="complete-stat-num" id="stat-wrong">0</div>
+          <div class="complete-stat-label">Incorrect</div>
+        </div>
+        <div class="complete-stat">
+          <div class="complete-stat-num" id="stat-accuracy">0%</div>
+          <div class="complete-stat-label">Accuracy</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="goHome()" style="margin:0 auto;display:flex">◀ Return to Base</button>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="words.js"></script>
+<script>
+// ============================================================
+// LEITNER SYSTEM ENGINE
+// ============================================================
+const BOX_INTERVALS = { 1: 1, 2: 2, 3: 4, 4: 7, 5: 14 };
+
+function getState() {
+  const raw = localStorage.getItem('barsky_state');
+  if (raw) return JSON.parse(raw);
+  return { cards: {}, startDate: todayStr(), currentLevel: 1, currentIndex: 0 };
+}
+
+function saveState(state) {
+  localStorage.setItem('barsky_state', JSON.stringify(state));
+}
+
+function todayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function daysSince(dateStr) {
+  const a = new Date(dateStr);
+  const b = new Date(todayStr());
+  return Math.floor((b - a) / 86400000);
+}
+
+function getCardId(level, index) {
+  return `L${level}_${index}`;
+}
+
+// Initialize cards for a given level
+function initLevelCards(state, level) {
+  const words = VOCAB_DATA[level];
+  words.forEach((w, i) => {
+    const id = getCardId(level, i);
+    if (!state.cards[id]) {
+      state.cards[id] = {
+        id, level, index: i,
+        box: 1,
+        nextReview: todayStr(),
+        introduced: todayStr()
+      };
+    }
+  });
+}
+
+// Get cards due today
+function getTodayCards(state) {
+  const today = todayStr();
+  return Object.values(state.cards).filter(c => c.nextReview <= today);
+}
+
+// Compute next review date
+function nextReviewDate(box) {
+  const days = BOX_INTERVALS[box] || 1;
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split('T')[0];
+}
+
+
+// Answer a card
+function recordAnswer(state, cardId, correct) {
+  const card = state.cards[cardId];
+  if (!card) return;
+  if (correct) {
+    card.box = Math.min(card.box + 1, 5);
+  } else {
+    card.box = 3;
+  }
+  card.nextReview = nextReviewDate(card.box);
+  saveState(state);
+}
+
+// ============================================================
+// SESSION MANAGEMENT
+// ============================================================
+let appState = getState();
+let currentSession = null; // { cards, index, correct, wrong, sessionType }
+
+function buildTodaySessions(state) {
+  const today = todayStr();
+  const sessions = [];
+
+  // New words session — next 20 unintroduced words
+  const allLevels = [1,2,3,4,5,6];
+  const newCards = [];
+  for (const lv of allLevels) {
+    const words = VOCAB_DATA[lv];
+    for (let i = 0; i < words.length; i++) {
+      const id = getCardId(lv, i);
+      if (!state.cards[id]) {
+        newCards.push({ id, level: lv, index: i, isNew: true });
+        if (newCards.length >= 20) break;
+      }
+    }
+    if (newCards.length >= 20) break;
+  }
+
+  if (newCards.length > 0) {
+    sessions.push({
+      type: 'new',
+      name: 'New Vocabulary',
+      meta: `Level ${newCards[0].level} — ${newCards.length} new words`,
+      cards: newCards,
+      completed: isSessionDone(state, 'new_' + today)
+    });
+  }
+
+  // Review sessions — cards due today, split by box
+  const dueCards = Object.values(state.cards).filter(c => c.nextReview <= today);
+  if (dueCards.length > 0) {
+    sessions.push({
+      type: 'review',
+      name: 'Review Session',
+      meta: `${dueCards.length} card${dueCards.length > 1 ? 's' : ''} due across all boxes`,
+      cards: dueCards.map(c => ({ ...c, isNew: false })),
+      completed: isSessionDone(state, 'review_' + today)
+    });
+  }
+
+  return sessions;
+}
+
+function isSessionDone(state, key) {
+  return !!(state.completedSessions && state.completedSessions[key]);
+}
+
+function markSessionDone(state, key) {
+  if (!state.completedSessions) state.completedSessions = {};
+  state.completedSessions[key] = true;
+  saveState(state);
+}
+
+// ============================================================
+// UI RENDERING
+// ============================================================
+function updateStats(state) {
+  const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  Object.values(state.cards).forEach(c => counts[c.box]++);
+  for (let b = 1; b <= 5; b++) {
+    document.getElementById(`count-box${b}`).textContent = counts[b];
+  }
+}
+
+function renderHome() {
+  const state = appState;
+  const today = new Date();
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  document.getElementById('header-date').innerHTML =
+    `${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}<br>${days[today.getDay()]}`;
+
+  const hour = today.getHours();
+  const greeting = hour < 12 ? 'Good Morning, Agent.' : hour < 18 ? 'Good Afternoon, Agent.' : 'Good Evening, Agent.';
+  document.getElementById('home-greeting').textContent = greeting;
+
+  // Calculate day number
+  const startDate = new Date(state.startDate);
+  const dayNum = Math.floor((today - startDate) / 86400000) + 1;
+  document.getElementById('header-day').textContent = `Day ${dayNum}`;
+
+  updateStats(state);
+
+  const sessions = buildTodaySessions(state);
+  const list = document.getElementById('today-sessions');
+  list.innerHTML = '';
+
+  const total = sessions.reduce((sum, s) => sum + s.cards.length, 0);
+  document.getElementById('today-total').textContent = total > 0 ? `${total} cards total` : '';
+
+  if (sessions.length === 0) {
+    list.innerHTML = `<div class="empty-state">
+      ▷ NO ACTIVE OPERATIONS TODAY<br>
+      All cards reviewed. Return tomorrow for new assignments.
+    </div>`;
+    return;
+  }
+
+  sessions.forEach(s => {
+    const item = document.createElement('div');
+    item.className = `session-item ${s.type === 'new' ? 'new-words' : 'review'}${s.completed ? ' completed' : ''}`;
+    item.innerHTML = `
+      <div class="session-left">
+        <div class="session-name">${s.name}</div>
+        <div class="session-meta">${s.meta}</div>
+      </div>
+      <div class="session-right">
+        <div class="card-count-badge">${s.cards.length}</div>
+        <div class="arrow-icon">▶</div>
+      </div>
+    `;
+    if (!s.completed) {
+      item.onclick = () => startSession(s);
+    }
+    list.appendChild(item);
+  });
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ============================================================
+// STUDY SESSION
+// ============================================================
+function startSession(session) {
+  // For new words, introduce them into state first
+  const state = appState;
+  if (session.type === 'new') {
+    session.cards.forEach(c => initCardInState(state, c.level, c.index));
+    saveState(state);
+  }
+
+  // Resolve card data
+  const resolvedCards = session.cards.map(c => {
+    const vocabWord = VOCAB_DATA[c.level][c.index];
+    const stateCard = state.cards[getCardId(c.level, c.index)];
+    return { ...vocabWord, id: getCardId(c.level, c.index), box: stateCard ? stateCard.box : 1, level: c.level, isNew: c.isNew || !stateCard };
+  });
+
+  currentSession = {
+    cards: resolvedCards,
+    index: 0,
+    correct: 0,
+    wrong: 0,
+    sessionType: session.type,
+    sessionKey: session.type + '_' + todayStr()
+  };
+
+  showScreen('study-screen');
+  document.getElementById('study-session-name').textContent =
+    session.type === 'new' ? '▶ NEW VOCABULARY' : '▶ REVIEW SESSION';
+  document.getElementById('session-complete').classList.remove('visible');
+  document.getElementById('card-scene').style.display = 'block';
+  document.getElementById('answer-row').classList.add('hidden');
+
+  renderCurrentCard();
+}
+
+function initCardInState(state, level, index) {
+  const id = getCardId(level, index);
+  if (!state.cards[id]) {
+    state.cards[id] = {
+      id, level, index,
+      box: 1,
+      nextReview: nextReviewDate(1),
+      introduced: todayStr()
+    };
+  }
+}
+
+// ============================================================
+// SPEECH SYNTHESIS
+// ============================================================
+let speechSynth = window.speechSynthesis;
+let currentWord = '';
+let currentExampleText = '';
+
+function getEnglishVoice() {
+  const voices = speechSynth.getVoices();
+  // Prefer high-quality English US voices
+  const preferred = ['Google US English', 'Alex', 'Samantha', 'Karen', 'Daniel'];
+  for (const name of preferred) {
+    const v = voices.find(v => v.name === name);
+    if (v) return v;
+  }
+  // Fallback: any en-US, then any en-
+  return voices.find(v => v.lang === 'en-US') ||
+         voices.find(v => v.lang.startsWith('en')) ||
+         null;
+}
+
+function speak(text, btnId, rate = 0.88) {
+  if (!speechSynth) return;
+  speechSynth.cancel();
+
+  const btn = document.getElementById(btnId);
+  if (btn) { btn.classList.add('speaking'); }
+
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-US';
+  utter.rate = rate;
+  utter.pitch = 1.0;
+
+  // Try to assign voice (voices may not be loaded yet on first call)
+  const voice = getEnglishVoice();
+  if (voice) utter.voice = voice;
+
+  utter.onend = () => { if (btn) btn.classList.remove('speaking'); };
+  utter.onerror = () => { if (btn) btn.classList.remove('speaking'); };
+
+  speechSynth.speak(utter);
+}
+
+function speakWord() {
+  if (currentWord) speak(currentWord, 'speech-btn-front', 0.82);
+}
+
+function speakExample() {
+  if (currentExampleText) speak(currentExampleText, 'speech-btn-back', 0.88);
+}
+
+// Strip HTML tags for TTS
+function stripHtml(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+
+// Voices load asynchronously on some browsers
+if (speechSynth.onvoiceschanged !== undefined) {
+  speechSynth.onvoiceschanged = () => { /* voices now available */ };
+}
+
+function renderCurrentCard() {
+  if (!currentSession) return;
+  const { cards, index } = currentSession;
+
+  if (index >= cards.length) {
+    showSessionComplete();
+    return;
+  }
+
+  const card = cards[index];
+  const total = cards.length;
+  const pct = Math.round((index / total) * 100);
+
+  document.getElementById('study-counter').textContent = `${index + 1} / ${total}`;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = pct + '%';
+
+  // Reset flip state
+  const flipCard = document.getElementById('flip-card');
+  flipCard.classList.remove('flipped');
+  document.getElementById('answer-row').classList.add('hidden');
+
+  // Box dot color
+  const boxColors = { 1: 'var(--box1)', 2: 'var(--box2)', 3: 'var(--box3)', 4: 'var(--box4)', 5: 'var(--box5)' };
+  const boxColor = boxColors[card.box] || boxColors[1];
+  document.getElementById('front-box-dot').style.background = boxColor;
+  document.getElementById('back-box-dot').style.background = boxColor;
+  document.getElementById('front-box-label').textContent = `BOX ${card.box}`;
+  document.getElementById('back-box-label').textContent = `BOX ${card.box}`;
+
+  document.getElementById('front-difficulty').textContent = card.difficulty || '';
+  document.getElementById('card-word').textContent = card.word;
+  document.getElementById('card-phonetic').textContent = card.phonetic ? `[${card.phonetic}]` : '';
+  document.getElementById('card-translation').textContent = card.translation;
+  document.getElementById('card-example').innerHTML = card.example;
+
+  // Store for speech
+  currentWord = card.word;
+  currentExampleText = stripHtml(card.example);
+
+  // Remove any lingering speaking state
+  document.getElementById('speech-btn-front').classList.remove('speaking');
+  document.getElementById('speech-btn-back').classList.remove('speaking');
+
+  // Auto-pronounce the word after a short delay
+  setTimeout(() => speakWord(), 400);
+}
+
+function flipCard() {
+  const flipCard = document.getElementById('flip-card');
+  if (!flipCard.classList.contains('flipped')) {
+    flipCard.classList.add('flipped');
+    setTimeout(() => {
+      document.getElementById('answer-row').classList.remove('hidden');
+    }, 350);
+  }
+}
+
+function answerCard(correct) {
+  if (!currentSession) return;
+  const state = appState;
+  const card = currentSession.cards[currentSession.index];
+
+  recordAnswer(state, card.id, correct);
+
+  if (correct) {
+    currentSession.correct++;
+  } else {
+    currentSession.wrong++;
+  }
+
+  currentSession.index++;
+  renderCurrentCard();
+}
+
+function showSessionComplete() {
+  document.getElementById('card-scene').style.display = 'none';
+  document.getElementById('answer-row').classList.add('hidden');
+
+  const { correct, wrong } = currentSession;
+  const total = correct + wrong;
+  const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-accuracy').textContent = pct + '%';
+
+  const msgs = pct >= 90 ? 'Outstanding performance, Agent.' :
+    pct >= 70 ? 'Solid execution. Continue the mission.' :
+    pct >= 50 ? 'Adequate. Reinforce the weak points.' :
+    'Significant gaps identified. Redouble efforts.';
+  document.getElementById('complete-sub').textContent = msgs;
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('progress-text').textContent = '100%';
+
+  markSessionDone(appState, currentSession.sessionKey);
+  document.getElementById('session-complete').classList.add('visible');
+}
+
+function goHome() {
+  if (speechSynth) speechSynth.cancel();
+  showScreen('home-screen');
+  renderHome();
+}
+
+function filterByBox(box) {
+  // Highlight box and could show filtered view — for now just flash
+  const el = document.querySelector(`.stat-box[data-box="${box}"]`);
+  el.style.transform = 'scale(1.08)';
+  setTimeout(() => el.style.transform = '', 300);
+}
+
+function confirmReset() {
+  if (confirm('RESET ALL PROGRESS?\n\nThis will permanently delete all card data, box positions, and session history. This cannot be undone.')) {
+    localStorage.removeItem('barsky_state');
+    appState = getState();
+    renderHome();
+    showToast('Protocol reset. Starting fresh, Agent.');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  renderHome();
+  showScreen('home-screen');
+});
+</script>
+</body>
+</html>
