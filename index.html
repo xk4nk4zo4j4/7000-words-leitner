@@ -1004,22 +1004,6 @@ function getCardId(level, index) {
   return `L${level}_${index}`;
 }
 
-// Initialize cards for a given level
-function initLevelCards(state, level) {
-  const words = VOCAB_DATA[level];
-  words.forEach((w, i) => {
-    const id = getCardId(level, i);
-    if (!state.cards[id]) {
-      state.cards[id] = {
-        id, level, index: i,
-        box: 1,
-        nextReview: todayStr(),
-        introduced: todayStr()
-      };
-    }
-  });
-}
-
 // Get cards due today
 function getTodayCards(state) {
   const today = todayStr();
@@ -1033,7 +1017,6 @@ function nextReviewDate(box) {
   d.setDate(d.getDate() + days);
   return d.toISOString().split('T')[0];
 }
-
 
 // Answer a card
 function recordAnswer(state, cardId, correct) {
@@ -1052,50 +1035,50 @@ function recordAnswer(state, cardId, correct) {
 // SESSION MANAGEMENT
 // ============================================================
 let appState = getState();
-let currentSession = null; // { cards, index, correct, wrong, sessionType }
+let currentSession = null; 
 
 function buildTodaySessions(state) {
   const today = todayStr();
   const sessions = [];
 
-  // New words session — next 20 unintroduced words
-  const allLevels = [1,2,3,4,5,6];
-  const newCards = [];
-  for (const lv of allLevels) {
-    const words = VOCAB_DATA[lv];
-    for (let i = 0; i < words.length; i++) {
-      const id = getCardId(lv, i);
-      if (!state.cards[id]) {
-        newCards.push({ id, level: lv, index: i, isNew: true });
-        if (newCards.length >= 20) break;
-      }
-    }
-    if (newCards.length >= 20) break;
-  }
-
-  if (newCards.length > 0) {
-    sessions.push({
-      type: 'new',
-      name: 'New Vocabulary',
-      meta: `Level ${newCards[0].level} — ${newCards.length} new words`,
-      cards: newCards,
-      completed: isSessionDone(state, 'new_' + today)
-    });
-  }
-
-  // Review sessions — cards due today, split by box
+  // Review sessions first (high priority)
   const dueCards = Object.values(state.cards).filter(c => c.nextReview <= today);
   if (dueCards.length > 0) {
     sessions.push({
       type: 'review',
-      name: 'Review Session',
-      meta: `${dueCards.length} card${dueCards.length > 1 ? 's' : ''} due across all boxes`,
+      name: 'Maintenance Operations',
+      meta: `${dueCards.length} targets due for review`,
       cards: dueCards.map(c => ({ ...c, isNew: false })),
       completed: isSessionDone(state, 'review_' + today)
     });
   }
 
+  // New words session
+  const newBatch = getNewBatch(state);
+  if (newBatch.length > 0) {
+    sessions.push({
+      type: 'new',
+      name: 'Infiltration Protocol',
+      meta: `Targeting ${newBatch.length} new vocabulary units`,
+      cards: newBatch,
+      completed: isSessionDone(state, 'new_' + today)
+    });
+  }
+
   return sessions;
+}
+
+function getNewBatch(state) {
+  const batch = [];
+  const words = VOCAB_DATA["1"] || [];
+  for (let i = 0; i < words.length; i++) {
+    const id = getCardId(1, i);
+    if (!state.cards[id]) {
+      batch.push({ id, level: 1, index: i, isNew: true });
+      if (batch.length >= 20) break;
+    }
+  }
+  return batch;
 }
 
 function isSessionDone(state, key) {
@@ -1121,6 +1104,17 @@ function updateStats(state) {
 
 function renderHome() {
   const state = appState;
+  
+  // Auto-reset if data source version changed (detected by entry count discrepancy)
+  const totalEntries = VOCAB_DATA["1"].length;
+  if (state.lastKnownCount && state.lastKnownCount !== totalEntries) {
+     localStorage.removeItem('barsky_state');
+     appState = getState();
+     showToast('Dataset refreshed. Local state reset for mission integrity.');
+  }
+  appState.lastKnownCount = totalEntries;
+  saveState(appState);
+
   const today = new Date();
   const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1132,10 +1126,10 @@ function renderHome() {
   const greeting = hour < 12 ? 'Good Morning, Agent.' : hour < 18 ? 'Good Afternoon, Agent.' : 'Good Evening, Agent.';
   document.getElementById('home-greeting').textContent = greeting;
 
-  // Calculate day number
-  const startDate = new Date(state.startDate);
-  const dayNum = Math.floor((today - startDate) / 86400000) + 1;
-  document.getElementById('header-day').textContent = `Day ${dayNum}`;
+  // Calculate mission progress
+  const knownCount = Object.keys(state.cards).length;
+  const progressPct = Math.round((knownCount / totalEntries) * 100);
+  document.getElementById('header-day').textContent = `${knownCount} / ${totalEntries} UNITS`;
 
   updateStats(state);
 
@@ -1143,35 +1137,54 @@ function renderHome() {
   const list = document.getElementById('today-sessions');
   list.innerHTML = '';
 
-  const total = sessions.reduce((sum, s) => sum + s.cards.length, 0);
-  document.getElementById('today-total').textContent = total > 0 ? `${total} cards total` : '';
-
   if (sessions.length === 0) {
     list.innerHTML = `<div class="empty-state">
       ▷ NO ACTIVE OPERATIONS TODAY<br>
-      All cards reviewed. Return tomorrow for new assignments.
+      ALL 7,000 TARGETS ELIMINATED. MISSION COMPLETE.
     </div>`;
-    return;
+  } else {
+    sessions.forEach(s => {
+      const item = document.createElement('div');
+      item.className = `session-item ${s.type === 'new' ? 'new-words' : 'review'}${s.completed ? ' completed' : ''}`;
+      item.innerHTML = `
+        <div class="session-left">
+          <div class="session-name">${s.name}</div>
+          <div class="session-meta">${s.meta}</div>
+        </div>
+        <div class="session-right">
+          <div class="card-count-badge">${s.cards.length}</div>
+          <div class="arrow-icon">▶</div>
+        </div>
+      `;
+      if (!s.completed) {
+        item.onclick = () => startSession(s);
+      }
+      list.appendChild(item);
+    });
   }
 
-  sessions.forEach(s => {
-    const item = document.createElement('div');
-    item.className = `session-item ${s.type === 'new' ? 'new-words' : 'review'}${s.completed ? ' completed' : ''}`;
-    item.innerHTML = `
-      <div class="session-left">
-        <div class="session-name">${s.name}</div>
-        <div class="session-meta">${s.meta}</div>
-      </div>
-      <div class="session-right">
-        <div class="card-count-badge">${s.cards.length}</div>
-        <div class="arrow-icon">▶</div>
-      </div>
-    `;
-    if (!s.completed) {
-      item.onclick = () => startSession(s);
-    }
-    list.appendChild(item);
-  });
+  // Check if user can start an additional batch
+  const hasNewToAssign = getNewBatch(state).length > 0;
+  if (hasNewToAssign) {
+     const addBatchBtn = document.createElement('div');
+     addBatchBtn.className = 'session-item new-words';
+     addBatchBtn.style.marginTop = '20px';
+     addBatchBtn.style.borderStyle = 'dashed';
+     addBatchBtn.innerHTML = `
+        <div class="session-left">
+          <div class="session-name">▷ INITIATE NEXT OPERATION</div>
+          <div class="session-meta">Analyze next 20 targets immediately</div>
+        </div>
+        <div class="session-right"><div class="arrow-icon">＋</div></div>
+     `;
+     addBatchBtn.onclick = () => {
+        // Find next 20 and start session immediately, unmarking 'new' session as done if it was
+        if (state.completedSessions) delete state.completedSessions['new_' + todayStr()];
+        const nextBatch = getNewBatch(state);
+        startSession({ type: 'new', name: 'Infiltration Protocol', cards: nextBatch });
+     };
+     list.appendChild(addBatchBtn);
+  }
 }
 
 function showScreen(id) {
@@ -1318,8 +1331,8 @@ function renderCurrentCard() {
   const boxColor = boxColors[card.box] || boxColors[1];
   document.getElementById('front-box-dot').style.background = boxColor;
   document.getElementById('back-box-dot').style.background = boxColor;
-  document.getElementById('front-box-label').textContent = `BOX ${card.box}`;
-  document.getElementById('back-box-label').textContent = `BOX ${card.box}`;
+  document.getElementById('front-box-label').textContent = `Target Ref: ${card.id}`;
+  document.getElementById('back-box-label').textContent = `Target Ref: ${card.id}`;
 
   document.getElementById('front-difficulty').textContent = card.difficulty || '';
   document.getElementById('card-word').textContent = card.word;
