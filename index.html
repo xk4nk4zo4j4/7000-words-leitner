@@ -237,6 +237,15 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 .card-front{background:linear-gradient(180deg,var(--surf2),var(--surf));border:2.5px solid var(--bdr);transform:translateZ(1px);-webkit-transform:translateZ(1px);}
 .card-back{background:linear-gradient(180deg,var(--surf),var(--pri-hi));border:2.5px solid var(--pri);transform:rotateY(180deg) translateZ(1px);-webkit-transform:rotateY(180deg) translateZ(1px);}
 
+
+.ios-safe-flip .flip-card{transform-style:flat;-webkit-transform-style:flat;perspective:none;-webkit-perspective:none;}
+.ios-safe-flip .flip-card.flipped{transform:none;-webkit-transform:none;}
+.ios-safe-flip .card-front,.ios-safe-flip .card-back{backface-visibility:visible;-webkit-backface-visibility:visible;transition:opacity .22s ease, transform .22s ease;}
+.ios-safe-flip .card-front{opacity:1;transform:translateX(0);-webkit-transform:translateX(0);}
+.ios-safe-flip .card-back{opacity:0;transform:translateX(12px);-webkit-transform:translateX(12px);}
+.ios-safe-flip .flip-card.flipped .card-front{opacity:0;transform:translateX(-12px);-webkit-transform:translateX(-12px);}
+.ios-safe-flip .flip-card.flipped .card-back{opacity:1;transform:translateX(0);-webkit-transform:translateX(0);}
+
 </style>
 </head>
 <body>
