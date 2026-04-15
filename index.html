@@ -121,9 +121,9 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 
 /* FLIP CARD */
 .card-scene{perspective:1200px;margin-bottom:var(--sp6);}
-.flip-card{width:100%;min-height:440px;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1);cursor:pointer;border-radius:var(--r-xl);}
+.flip-card{width:100%;min-height:440px;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1);cursor:pointer;border-radius:var(--r-xl);will-change:transform;contain:layout paint;}
 .flip-card.flipped{transform:rotateY(180deg);}
-.card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--r-xl);padding:var(--sp8);display:flex;flex-direction:column;box-shadow:var(--sh-l);}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--r-xl);padding:var(--sp8);display:flex;flex-direction:column;box-shadow:var(--sh-l);transform:translateZ(0);}
 .card-front{background:var(--surf2);border:2.5px solid var(--bdr);}
 .card-back{background:var(--surf);border:2.5px solid var(--pri);transform:rotateY(180deg);}
 .card-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp5);}
@@ -214,6 +214,12 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 .lv-opt-name{font-size:var(--text-xs);color:var(--tx-m);margin-top:2px;}
 .lv-opt-count{font-size:.75rem;color:var(--tx-f);margin-top:1px;}
 .level-picker-note{font-size:var(--text-xs);color:var(--tx-f);line-height:1.6;}
+
+.flip-card.flipping .card-front,
+.flip-card.flipping .card-back{pointer-events:none;}
+.flip-card.flipping .card-back{visibility:hidden;}
+.flip-card.show-back .card-back{visibility:visible;}
+
 </style>
 </head>
 <body>
@@ -228,6 +234,7 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
     </div>
     <div class="topbar-right">
       <div class="day-chip" id="header-day">Day 1</div>
+      <a href="./about.html" class="icon-btn" title="使用說明" style="text-decoration:none">ℹ</a>
       <button class="icon-btn settings-btn" onclick="showSettings()" title="設定">⚙</button>
       <button class="icon-btn" data-theme-toggle aria-label="切換主題">🌙</button>
     </div>
@@ -626,32 +633,43 @@ function renderCard(){
   const{cards,index}=currentSession;
   if(index>=cards.length){endSession();return;}
   const card=cards[index];
+  const flip=document.getElementById('flip-card');
+  flip.classList.remove('flipped','flipping','show-back');
   document.getElementById('study-counter').textContent=`${index+1} / ${cards.length}`;
   document.getElementById('prog-fill').style.width=Math.round((index/cards.length)*100)+'%';
-  document.getElementById('flip-card').classList.remove('flipped');
   document.getElementById('answer-row').classList.add('hidden');
   const bc={1:'var(--b1)',2:'var(--b2)',3:'var(--b3)',4:'var(--b4)',5:'var(--b5)'}[card.box]||'var(--b1)';
   ['f-dot','b-dot'].forEach(id=>document.getElementById(id).style.background=bc);
   ['f-lbl','b-lbl'].forEach(id=>document.getElementById(id).textContent=`箱 ${card.box}`);
   document.getElementById('card-word').textContent=card.word;
-  document.getElementById('card-trans').textContent=card.translation;
-  document.getElementById('card-ex').innerHTML=card.example;
+  document.getElementById('card-trans').textContent='';
+  document.getElementById('card-ex').textContent='';
   curWord=card.word;curEx=stripHtml(card.example);
   ['speech-front','speech-back'].forEach(id=>document.getElementById(id).classList.remove('speaking'));
   setTimeout(()=>speakWord(),400);
 }
 function flipCard(){
   const fc=document.getElementById('flip-card');
-  if(!fc.classList.contains('flipped')){
+  if(fc.classList.contains('flipped')) return;
+  fc.classList.add('flipping');
+  requestAnimationFrame(()=>{
     fc.classList.add('flipped');
-    setTimeout(()=>document.getElementById('answer-row').classList.remove('hidden'),350);
-  }
+    setTimeout(()=>{
+      fc.classList.add('show-back');
+      fc.classList.remove('flipping');
+      document.getElementById('card-trans').textContent=currentSession.cards[currentSession.index].translation;
+      document.getElementById('card-ex').innerHTML=currentSession.cards[currentSession.index].example;
+      document.getElementById('answer-row').classList.remove('hidden');
+    },280);
+  });
 }
 function answerCard(ok){
   if(!currentSession)return;
   const card=currentSession.cards[currentSession.index];
   recordAnswer(appState,card.id,ok);
   if(ok)currentSession.correct++;else currentSession.wrong++;
+  const fc=document.getElementById('flip-card');
+  fc.classList.remove('flipped','show-back','flipping');
   currentSession.index++;renderCard();
 }
 function endSession(){
