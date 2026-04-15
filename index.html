@@ -120,12 +120,11 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--pri),var(--pri-h));border-radius:var(--r-full);transition:width .4s ease;}
 
 /* FLIP CARD */
-.card-scene{perspective:1200px;margin-bottom:var(--sp6);}
+.card-scene{perspective:1200px;margin-bottom:var(--sp6);transition:opacity .15s ease;}
 .flip-card{width:100%;min-height:440px;position:relative;transform-style:preserve-3d;transition:transform .48s cubic-bezier(.22,1,.36,1);cursor:pointer;border-radius:var(--r-xl);will-change:transform;perspective:1200px;}
 .flip-card.flipped{transform:rotateY(180deg);}
 .card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--r-xl);padding:var(--sp8);display:flex;flex-direction:column;box-shadow:var(--sh-l);overflow:hidden;}
 .card-front{background:linear-gradient(180deg,var(--surf2),var(--surf));border:2.5px solid var(--bdr);}
-.flip-card.transitioning .card-back{opacity:0;transition:none;}
 .card-back{background:linear-gradient(180deg,var(--surf),var(--pri-hi));border:2.5px solid var(--pri);transform:rotateY(180deg);}
 .card-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp5);}
 .box-ind{display:flex;align-items:center;gap:var(--sp2);background:var(--bg);padding:var(--sp2) var(--sp4);border-radius:var(--r-full);border:1.5px solid var(--bdr);}
@@ -656,14 +655,19 @@ function answerCard(ok){
   const card=currentSession.cards[currentSession.index];
   recordAnswer(appState,card.id,ok);
   if(ok)currentSession.correct++;else currentSession.wrong++;
-  const fc=document.getElementById('flip-card');
-  fc.classList.add('transitioning');
-  fc.classList.remove('flipped');
+  const scene=document.getElementById('card-scene');
+  // fade out
+  scene.style.opacity='0';
   setTimeout(()=>{
+    const fc=document.getElementById('flip-card');
+    fc.classList.remove('flipped');
     currentSession.index++;
     renderCard();
-    setTimeout(()=>fc.classList.remove('transitioning'),30);
-  },500);
+    // fade in after a brief paint frame
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      scene.style.opacity='1';
+    }));
+  },160);
 }
 function endSession(){
   document.getElementById('card-scene').style.display='none';
