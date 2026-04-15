@@ -52,22 +52,30 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 .app{max-width:680px;margin:0 auto;padding:var(--sp4);}
 .screen{display:none;}.screen.active{display:block;}
+
+/* TOPBAR */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--sp4) var(--sp5);background:var(--surf);border-radius:var(--r-lg);box-shadow:var(--sh-s);margin-bottom:var(--sp6);gap:var(--sp4);}
 .topbar-title{font-family:var(--font-display);font-size:var(--text-xl);font-weight:700;color:var(--pri);line-height:1.2;}
 .topbar-sub{font-size:var(--text-xs);color:var(--tx-m);margin-top:.25rem;}
 .topbar-right{display:flex;gap:var(--sp3);align-items:center;flex-shrink:0;}
 .icon-btn{width:52px;height:52px;border-radius:var(--r-full);background:var(--surf2);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:var(--sh-s);flex-shrink:0;}
 .icon-btn:hover{background:var(--pri-hi);}.icon-btn:active{transform:scale(.95);}
-.reset-icon-btn{color:var(--tx-f);}.reset-icon-btn:hover{background:var(--err-hi);color:var(--err);}
+.settings-btn{color:var(--tx-m);}.settings-btn:hover{background:var(--surf2);}
 .day-chip{background:var(--pri);color:var(--tx-inv);padding:var(--sp2) var(--sp4);border-radius:var(--r-full);font-size:var(--text-sm);font-weight:700;white-space:nowrap;}
+
+/* GREETING */
 .greeting{background:var(--surf);border-radius:var(--r-lg);padding:var(--sp6);margin-bottom:var(--sp6);box-shadow:var(--sh-s);}
 .greeting-text{font-size:var(--text-lg);font-weight:700;color:var(--tx-col);margin-bottom:var(--sp2);}
 .greeting-sub{font-size:var(--text-sm);color:var(--tx-m);}
+
+/* LOADING */
 .loading-wrap{text-align:center;padding:var(--sp12) var(--sp6);}
 .loading-spinner{width:52px;height:52px;border:5px solid var(--div);border-top-color:var(--pri);border-radius:50%;animation:spin .9s linear infinite;margin:0 auto var(--sp5);}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loading-text{font-size:var(--text-base);color:var(--tx-m);}
 .load-error{background:var(--err-hi);color:var(--err);border-radius:var(--r-lg);padding:var(--sp5) var(--sp6);font-size:var(--text-base);font-weight:600;text-align:center;line-height:1.7;}
+
+/* LEVEL BANNER */
 .level-banner{background:var(--surf);border-radius:var(--r-lg);padding:var(--sp5) var(--sp6);margin-bottom:var(--sp6);box-shadow:var(--sh-s);border-left:5px solid var(--pri);}
 .level-banner-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp3);}
 .level-badge{background:var(--pri);color:var(--tx-inv);padding:var(--sp2) var(--sp5);border-radius:var(--r-full);font-size:var(--text-base);font-weight:700;}
@@ -75,6 +83,8 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 .level-bar{height:10px;background:var(--div);border-radius:var(--r-full);overflow:hidden;}
 .level-bar-fill{height:100%;background:linear-gradient(90deg,var(--pri),var(--pri-h));border-radius:var(--r-full);transition:width .6s ease;}
 .level-unlock-hint{font-size:var(--text-xs);color:var(--tx-f);margin-top:var(--sp2);}
+
+/* STATS */
 .section-title{font-size:var(--text-sm);font-weight:700;color:var(--tx-m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--sp3);padding-left:var(--sp2);}
 .stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--sp3);margin-bottom:var(--sp6);}
 .stat-box{background:var(--surf);border-radius:var(--r-md);padding:var(--sp4) var(--sp2);text-align:center;box-shadow:var(--sh-s);border:2px solid var(--bdr);}
@@ -82,6 +92,8 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 .stat-lbl{font-size:var(--text-xs);color:var(--tx-m);font-weight:600;}
 .stat-num{font-size:var(--text-lg);font-weight:700;color:var(--tx-col);line-height:1.2;}
 .stat-freq{font-size:.8rem;color:var(--tx-f);margin-top:var(--sp1);}
+
+/* SESSIONS */
 .sessions-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp3);padding-left:var(--sp2);}
 .session-item{background:var(--surf);border-radius:var(--r-lg);padding:var(--sp5) var(--sp6);margin-bottom:var(--sp3);box-shadow:var(--sh-s);border:2px solid var(--bdr);display:flex;align-items:center;gap:var(--sp4);cursor:pointer;transition:all var(--tx);}
 .session-item:hover{box-shadow:var(--sh-m);transform:translateY(-2px);}.session-item:active{transform:scale(.99);}
@@ -97,6 +109,8 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 .btn-extra:hover{background:var(--pri-hi);}.btn-extra:active{transform:scale(.99);}
 .empty-state{text-align:center;padding:var(--sp12) var(--sp6);color:var(--tx-m);font-size:var(--text-base);line-height:1.8;}
 .empty-icon{font-size:3.5rem;display:block;margin-bottom:var(--sp4);}
+
+/* STUDY */
 .study-topbar{display:flex;align-items:center;gap:var(--sp4);margin-bottom:var(--sp5);}
 .back-btn{width:52px;height:52px;border-radius:var(--r-full);background:var(--surf);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;box-shadow:var(--sh-s);}
 .back-btn:hover{background:var(--pri-hi);}.back-btn:active{transform:scale(.95);}
@@ -104,10 +118,12 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 .study-counter{font-size:var(--text-sm);color:var(--tx-m);margin-top:var(--sp1);}
 .prog-wrap{background:var(--div);border-radius:var(--r-full);height:10px;margin-bottom:var(--sp6);overflow:hidden;}
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--pri),var(--pri-h));border-radius:var(--r-full);transition:width .4s ease;}
+
+/* FLIP CARD */
 .card-scene{perspective:1200px;margin-bottom:var(--sp6);}
 .flip-card{width:100%;min-height:440px;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1);cursor:pointer;border-radius:var(--r-xl);}
 .flip-card.flipped{transform:rotateY(180deg);}
-.card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--r-xl);padding:var(--sp8);display:flex;flex-direction:column;box-shadow:var(--sh-l);overflow:visible;}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--r-xl);padding:var(--sp8);display:flex;flex-direction:column;box-shadow:var(--sh-l);}
 .card-front{background:var(--surf2);border:2.5px solid var(--bdr);}
 .card-back{background:var(--surf);border:2.5px solid var(--pri);transform:rotateY(180deg);}
 .card-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp5);}
@@ -125,12 +141,16 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 .card-trans{font-size:var(--text-xl);font-weight:700;color:var(--tx-col);line-height:1.3;}
 .card-ex{font-size:var(--text-base);color:var(--tx-m);line-height:1.75;background:var(--bg);border-radius:var(--r-md);padding:var(--sp4) var(--sp5);border-left:4px solid var(--pri);}
 .card-ex em{font-style:normal;font-weight:700;color:var(--pri);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;}
+
+/* ANSWER BUTTONS */
 .answer-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp4);margin-bottom:var(--sp6);}
 .answer-row.hidden{display:none;}
 .ans-btn{padding:var(--sp5) var(--sp4);border-radius:var(--r-lg);font-size:var(--text-base);font-weight:700;cursor:pointer;border:3px solid transparent;min-height:68px;transition:all var(--tx);}
 .ans-btn:active{transform:scale(.97);}
 .btn-wrong{background:var(--err-hi);color:var(--err);border-color:var(--err);}.btn-wrong:hover{background:var(--err);color:var(--tx-inv);}
 .btn-right{background:var(--ok-hi);color:var(--ok);border-color:var(--ok);}.btn-right:hover{background:var(--ok);color:var(--tx-inv);}
+
+/* COMPLETE */
 .complete{display:none;text-align:center;padding:var(--sp8) var(--sp4);background:var(--surf);border-radius:var(--r-xl);box-shadow:var(--sh-l);}
 .complete.visible{display:block;}
 .complete-icon{font-size:4rem;display:block;margin-bottom:var(--sp4);}
@@ -142,28 +162,64 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp2);padding:var(--sp4) var(--sp8);border-radius:var(--r-full);font-size:var(--text-base);font-weight:700;cursor:pointer;border:none;transition:all var(--tx);min-height:56px;min-width:120px;}
 .btn:active{transform:scale(.97);}
 .btn-primary{background:var(--pri);color:var(--tx-inv);box-shadow:var(--sh-s);}.btn-primary:hover{background:var(--pri-h);}
+
+/* SETTINGS MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:200;padding:var(--sp4);}
 .modal-overlay.hidden{display:none;}
-.modal-box{background:var(--surf2);border-radius:var(--r-xl);padding:var(--sp8);max-width:400px;width:100%;box-shadow:var(--sh-l);}
-.modal-title{font-size:var(--text-lg);font-weight:700;color:var(--err);margin-bottom:var(--sp3);}
-.modal-body{font-size:var(--text-sm);color:var(--tx-m);margin-bottom:var(--sp6);line-height:1.7;}
+.modal-box{background:var(--surf2);border-radius:var(--r-xl);padding:var(--sp8);max-width:420px;width:100%;box-shadow:var(--sh-l);}
+.modal-title{font-size:var(--text-lg);font-weight:700;color:var(--tx-col);margin-bottom:var(--sp6);display:flex;align-items:center;gap:var(--sp3);}
+.settings-section{margin-bottom:var(--sp6);}
+.settings-section-title{font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tx-f);margin-bottom:var(--sp3);}
+.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp3);}
+.level-opt{padding:var(--sp4) var(--sp3);border-radius:var(--r-lg);border:2.5px solid var(--bdr);background:var(--surf);text-align:center;cursor:pointer;transition:all var(--tx);}
+.level-opt:hover{border-color:var(--pri);background:var(--pri-hi);}
+.level-opt.active{border-color:var(--pri);background:var(--pri-hi);}
+.level-opt-num{font-size:var(--text-base);font-weight:700;color:var(--pri);}
+.level-opt-name{font-size:var(--text-xs);color:var(--tx-m);margin-top:var(--sp1);}
+.level-opt-count{font-size:.8rem;color:var(--tx-f);margin-top:2px;}
+.settings-divider{height:1px;background:var(--div);margin:var(--sp6) 0;}
+.danger-section-title{font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--err);margin-bottom:var(--sp3);}
 .modal-btns{display:flex;gap:var(--sp3);}
 .btn-cancel{flex:1;padding:var(--sp4);border-radius:var(--r-full);background:var(--surf);border:2px solid var(--bdr);font-size:var(--text-base);font-weight:700;color:var(--tx-m);cursor:pointer;}
 .btn-cancel:hover{background:var(--bg);}
-.btn-confirm-reset{flex:1;padding:var(--sp4);border-radius:var(--r-full);background:var(--err);color:var(--tx-inv);font-size:var(--text-base);font-weight:700;border:none;cursor:pointer;}
-.btn-confirm-reset:hover{opacity:.9;}
-.toast{position:fixed;bottom:var(--sp8);left:50%;transform:translateX(-50%) translateY(20px);background:var(--tx-col);color:var(--bg);padding:var(--sp4) var(--sp8);border-radius:var(--r-full);font-size:var(--text-base);font-weight:600;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:100;white-space:nowrap;max-width:90vw;text-align:center;}
+.btn-confirm-reset{width:100%;padding:var(--sp4);border-radius:var(--r-lg);background:var(--err-hi);color:var(--err);font-size:var(--text-base);font-weight:700;border:2px solid var(--err);cursor:pointer;text-align:center;}
+.btn-confirm-reset:hover{background:var(--err);color:var(--tx-inv);}
+.level-switch-note{font-size:var(--text-xs);color:var(--tx-f);margin-top:var(--sp3);line-height:1.6;}
+
+/* TOAST */
+.toast{position:fixed;bottom:var(--sp8);left:50%;transform:translateX(-50%) translateY(20px);background:var(--tx-col);color:var(--bg);padding:var(--sp4) var(--sp8);border-radius:var(--r-full);font-size:var(--text-base);font-weight:600;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:300;white-space:nowrap;max-width:90vw;text-align:center;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
 @media(max-width:480px){
   .app{padding:var(--sp3);}.stats-grid{gap:var(--sp2);}.stat-box{padding:var(--sp3) var(--sp1);}
   .card-face{padding:var(--sp6) var(--sp5);}.answer-row{gap:var(--sp3);}.complete-stats{gap:var(--sp3);}
-  .modal-btns{flex-direction:column;}
+  .level-grid{grid-template-columns:repeat(2,1fr);}.modal-btns{flex-direction:column;}
 }
+
+.level-banner-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:var(--sp3);gap:var(--sp3);}
+.toggle-wrap{display:flex;align-items:center;gap:var(--sp2);cursor:pointer;flex-shrink:0;user-select:none;}
+.toggle-label{font-size:var(--text-xs);color:var(--tx-m);font-weight:600;white-space:nowrap;}
+.toggle-switch{position:relative;width:48px;height:28px;flex-shrink:0;}
+.toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
+.toggle-knob{position:absolute;inset:0;background:var(--div);border-radius:var(--r-full);border:2px solid var(--bdr);transition:background .25s,border-color .25s;cursor:pointer;}
+.toggle-knob::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .25s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.toggle-switch input:checked~.toggle-knob{background:var(--pri);border-color:var(--pri);}
+.toggle-switch input:checked~.toggle-knob::after{transform:translateX(20px);}
+.level-picker{margin-top:var(--sp4);padding-top:var(--sp4);border-top:1px solid var(--div);}
+.level-picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp2);margin-bottom:var(--sp3);}
+.lv-opt{padding:var(--sp3) var(--sp2);border-radius:var(--r-md);border:2px solid var(--bdr);background:var(--surf2);text-align:center;cursor:pointer;transition:all var(--tx);}
+.lv-opt:hover{border-color:var(--pri);background:var(--pri-hi);}
+.lv-opt.active{border-color:var(--pri);background:var(--pri-hi);}
+.lv-opt-num{font-size:var(--text-sm);font-weight:700;color:var(--pri);}
+.lv-opt-name{font-size:var(--text-xs);color:var(--tx-m);margin-top:2px;}
+.lv-opt-count{font-size:.75rem;color:var(--tx-f);margin-top:1px;}
+.level-picker-note{font-size:var(--text-xs);color:var(--tx-f);line-height:1.6;}
 </style>
 </head>
 <body>
 <main class="app">
 
+<!-- HOME -->
 <div id="home-screen" class="screen active">
   <div class="topbar">
     <div>
@@ -172,7 +228,7 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
     </div>
     <div class="topbar-right">
       <div class="day-chip" id="header-day">Day 1</div>
-      <button class="icon-btn reset-icon-btn" onclick="showResetModal()" title="重置所有進度">⚙</button>
+      <button class="icon-btn settings-btn" onclick="showSettings()" title="設定">⚙</button>
       <button class="icon-btn" data-theme-toggle aria-label="切換主題">🌙</button>
     </div>
   </div>
@@ -184,7 +240,7 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 
   <div id="loading-wrap" class="loading-wrap">
     <div class="loading-spinner"></div>
-    <div class="loading-text" id="loading-text">準備單字資料中…</div>
+    <div class="loading-text">準備單字資料中…</div>
   </div>
 
   <div id="home-content" style="display:none">
@@ -194,8 +250,22 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
         <div class="level-pct" id="level-pct">0%</div>
       </div>
       <div class="level-bar"><div class="level-bar-fill" id="level-bar-fill" style="width:0%"></div></div>
-      <div class="level-unlock-hint" id="level-unlock-hint"></div>
+      <div class="level-banner-bottom">
+        <div class="level-unlock-hint" id="level-unlock-hint"></div>
+        <label class="toggle-wrap" title="自選 Level 模式">
+          <span class="toggle-label">自選 Level</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="level-mode-toggle" onchange="onLevelModeToggle(this.checked)">
+            <span class="toggle-knob"></span>
+          </div>
+        </label>
+      </div>
+      <div class="level-picker" id="level-picker" style="display:none">
+        <div class="level-picker-grid" id="level-picker-grid"></div>
+        <div class="level-picker-note">💡 切換等級只影響新單字來源，複習任務與箱子進度不受影響。</div>
+      </div>
     </div>
+
     <div class="section-title">Leitner 學習箱狀態</div>
     <div class="stats-grid">
       <div class="stat-box"><div class="stat-dot" style="background:var(--b1)"></div><div class="stat-lbl">箱 1</div><div class="stat-num" id="count-box1">0</div><div class="stat-freq">每天</div></div>
@@ -204,6 +274,7 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
       <div class="stat-box"><div class="stat-dot" style="background:var(--b4)"></div><div class="stat-lbl">箱 4</div><div class="stat-num" id="count-box4">0</div><div class="stat-freq">14 天</div></div>
       <div class="stat-box"><div class="stat-dot" style="background:var(--b5)"></div><div class="stat-lbl">箱 5</div><div class="stat-num" id="count-box5">0</div><div class="stat-freq">30 天</div></div>
     </div>
+
     <div class="sessions-hd">
       <span class="section-title" style="margin:0;padding:0">今日學習任務</span>
       <span id="today-total" style="font-size:var(--text-xs);color:var(--tx-m)"></span>
@@ -215,6 +286,7 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
   </div>
 </div>
 
+<!-- STUDY -->
 <div id="study-screen" class="screen">
   <div class="study-topbar">
     <button class="back-btn" onclick="goHome()">◀</button>
@@ -224,6 +296,7 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
     </div>
   </div>
   <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+
   <div class="card-scene" id="card-scene" style="display:none">
     <div class="flip-card" id="flip-card" onclick="flipCard()">
       <div class="card-face card-front">
@@ -246,10 +319,12 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
       </div>
     </div>
   </div>
+
   <div class="answer-row hidden" id="answer-row">
     <button class="ans-btn btn-wrong" onclick="answerCard(false)">✕ 不熟悉</button>
     <button class="ans-btn btn-right" onclick="answerCard(true)">✓ 已記住</button>
   </div>
+
   <div class="complete" id="complete">
     <span class="complete-icon">🎉</span>
     <div class="complete-title">本節完成！</div>
@@ -262,19 +337,44 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
     <button class="btn btn-primary" onclick="goHome()">◀ 返回首頁</button>
   </div>
 </div>
-
 </main>
 
-<div class="modal-overlay hidden" id="reset-modal">
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay hidden" id="settings-modal">
   <div class="modal-box">
-    <div class="modal-title">⚠ 重置所有進度</div>
-    <div class="modal-body">確定要清除所有學習進度嗎？<br>所有卡片位置和學習紀錄將永久刪除，無法復原。</div>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="hideResetModal()">取消</button>
-      <button class="btn-confirm-reset" onclick="doReset()">確定重置</button>
+    <div class="modal-title">⚙ 設定</div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">目前學習等級</div>
+      <div class="level-grid" id="level-grid"></div>
+      <div class="level-switch-note">💡 切換等級後，新單字任務將從該等級抽取。已學過的單字與箱子進度不受影響，複習任務也不會改變。</div>
+    </div>
+
+    <div class="settings-divider"></div>
+
+    <div class="settings-section">
+      <div class="danger-section-title">危險區域</div>
+      <button class="btn-confirm-reset" onclick="confirmReset()">⚠ 重置所有學習進度</button>
+    </div>
+
+    <div style="margin-top:var(--sp6)">
+      <button class="btn-cancel" onclick="hideSettings()" style="width:100%">關閉</button>
     </div>
   </div>
 </div>
+
+<!-- RESET CONFIRM MODAL -->
+<div class="modal-overlay hidden" id="reset-modal">
+  <div class="modal-box">
+    <div class="modal-title" style="color:var(--err)">⚠ 確認重置</div>
+    <div style="font-size:var(--text-sm);color:var(--tx-m);margin-bottom:var(--sp6);line-height:1.7;">確定要清除所有學習進度嗎？<br>所有卡片位置和學習紀錄將永久刪除，無法復原。</div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="hideResetModal()">取消</button>
+      <button style="flex:1;padding:var(--sp4);border-radius:var(--r-full);background:var(--err);color:var(--tx-inv);font-size:var(--text-base);font-weight:700;border:none;cursor:pointer;" onclick="doReset()">確定重置</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -284,12 +384,10 @@ const WRONG_BOX={1:1,2:1,3:1,4:2,5:3};
 const UNLOCK_THRESHOLD=0.8;
 let VOCAB_DATA=null;
 
-// ── Service Worker registration ──
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
 
-// ── Load words.json (from cache via SW, or network on first visit) ──
 async function loadVocab(){
   try{
     const res=await fetch('./words.json');
@@ -352,14 +450,14 @@ function getRandomNewCards(state,count,batchIndex){
   let s=seed;
   function rng(){s=(s*16807)%2147483647;return(s-1)/2147483646;}
   for(let i=unseen.length-1;i>0;i--){
-    const j=Math.floor(rng()*(i+1));
-    const t=unseen[i];unseen[i]=unseen[j];unseen[j]=t;
+    const j=Math.floor(rng()*(i+1));const t=unseen[i];unseen[i]=unseen[j];unseen[j]=t;
   }
   return unseen.slice(batchIndex*count,(batchIndex+1)*count).map(i=>({id:getCardId(lv,i),level:lv,index:i}));
 }
 
 let appState=getState(),currentSession=null,extraBatch=0;
 
+// ── SPEECH ──
 const synth=window.speechSynthesis;
 let curWord='',curEx='';
 function getVoice(){
@@ -385,6 +483,7 @@ if(synth&&synth.onvoiceschanged!==undefined)synth.onvoiceschanged=()=>{};
 
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
+// ── RENDER HOME ──
 function renderHome(){
   const state=appState,now=new Date();
   const days=['日','一','二','三','四','五','六'];
@@ -405,8 +504,12 @@ function renderHome(){
   document.getElementById('level-unlock-hint').textContent=lv<6
     ?`達到 80% 單字進入箱 3 以上，即可自動解鎖 Level ${lv+1} ${LEVEL_NAMES[lv+1]}`
     :'🎊 已達最高等級！繼續複習鞏固所有單字';
+  // re-render picker if open
+  const tog=document.getElementById('level-mode-toggle');
+  if(tog&&tog.checked) renderLevelPicker();
   renderSessions(state);
 }
+
 function renderSessions(state){
   const today=todayStr(),lv=state.currentLevel;
   const list=document.getElementById('today-sessions');list.innerHTML='';
@@ -420,7 +523,7 @@ function renderSessions(state){
       newCards.length,newDone,()=>launchNew(state,newCards,extraBatch)));
   }else{
     const d=document.createElement('div');d.className='empty-state';
-    d.innerHTML=`<span class="empty-icon">🏆</span>Level ${lv} ${LEVEL_NAMES[lv]}<br>全部單字已介紹完畢！<br><small style="color:var(--tx-f)">請繼續複習，或等待下一等級自動解鎖</small>`;
+    d.innerHTML=`<span class="empty-icon">🏆</span>Level ${lv} ${LEVEL_NAMES[lv]}<br>全部單字已介紹完畢！<br><small style="color:var(--tx-f)">繼續複習，或在設定中切換等級</small>`;
     list.appendChild(d);
   }
   const due=Object.values(state.cards).filter(c=>c.nextReview<=today);
@@ -432,6 +535,7 @@ function renderSessions(state){
   document.getElementById('extra-wrap').style.display=(newDone&&unseenLeft>0)?'block':'none';
   document.getElementById('today-total').textContent=(newCards.length+due.length)>0?`共 ${newCards.length+due.length} 張卡片`:'';
 }
+
 function isDone(state,key){return!!(state.completedSessions&&state.completedSessions[key]);}
 function markDone(state,key){if(!state.completedSessions)state.completedSessions={};state.completedSessions[key]=true;saveState(state);}
 function makeItem(iconCls,emoji,name,meta,cnt,done,cb){
@@ -441,6 +545,50 @@ function makeItem(iconCls,emoji,name,meta,cnt,done,cb){
   if(!done)el.onclick=cb;
   return el;
 }
+
+// ── SETTINGS ──
+function showSettings(){
+  const state=appState;
+  const grid=document.getElementById('level-grid');
+  grid.innerHTML='';
+  for(let lv=1;lv<=6;lv++){
+    const total=(VOCAB_DATA&&VOCAB_DATA[lv])?VOCAB_DATA[lv].length:0;
+    const learned=total-unseenCount(state,lv);
+    const isActive=state.currentLevel===lv;
+    const el=document.createElement('div');
+    el.className='level-opt'+(isActive?' active':'');
+    el.innerHTML=`<div class="level-opt-num">Level ${lv}</div><div class="level-opt-name">${LEVEL_NAMES[lv]}</div><div class="level-opt-count">${learned}/${total}</div>`;
+    el.onclick=()=>switchLevel(lv);
+    grid.appendChild(el);
+  }
+  document.getElementById('settings-modal').classList.remove('hidden');
+}
+function hideSettings(){document.getElementById('settings-modal').classList.add('hidden');}
+
+function switchLevel(lv){
+  if(appState.currentLevel===lv){hideSettings();return;}
+  appState.currentLevel=lv;
+  extraBatch=0;
+  saveState(appState);
+  hideSettings();
+  renderHome();
+  showToast(`已切換到 Level ${lv} ${LEVEL_NAMES[lv]}`);
+}
+
+function confirmReset(){
+  hideSettings();
+  setTimeout(()=>document.getElementById('reset-modal').classList.remove('hidden'),200);
+}
+function hideResetModal(){document.getElementById('reset-modal').classList.add('hidden');}
+function doReset(){
+  try{localStorage.removeItem('vocab_v3');}catch(e){}
+  extraBatch=0;appState=getState();hideResetModal();renderHome();showToast('進度已重置，重新開始！');
+}
+
+document.getElementById('settings-modal').addEventListener('click',function(e){if(e.target===this)hideSettings();});
+document.getElementById('reset-modal').addEventListener('click',function(e){if(e.target===this)hideResetModal();});
+
+// ── SESSIONS ──
 function launchNew(state,newCards,batchIdx){
   newCards.forEach(c=>initCard(state,c.level,c.index));saveState(state);
   const lv=state.currentLevel;
@@ -473,6 +621,8 @@ function openStudy(title){
   document.getElementById('answer-row').classList.add('hidden');
   renderCard();
 }
+
+// ── CARD FLOW ──
 function renderCard(){
   if(!currentSession)return;
   const{cards,index}=currentSession;
@@ -526,17 +676,13 @@ function endSession(){
   document.getElementById('complete').classList.add('visible');
 }
 function goHome(){if(synth)synth.cancel();showScreen('home-screen');renderHome();}
-function showResetModal(){document.getElementById('reset-modal').classList.remove('hidden');}
-function hideResetModal(){document.getElementById('reset-modal').classList.add('hidden');}
-function doReset(){
-  try{localStorage.removeItem('vocab_v3');}catch(e){}
-  extraBatch=0;appState=getState();hideResetModal();renderHome();showToast('進度已重置，重新開始！');
-}
-document.getElementById('reset-modal').addEventListener('click',function(e){if(e.target===this)hideResetModal();});
+
 function showToast(msg){
   const t=document.getElementById('toast');t.textContent=msg;
   t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4000);
 }
+
+// Theme
 (function(){
   const html=document.documentElement,btn=document.querySelector('[data-theme-toggle]');
   let dark=window.matchMedia('(prefers-color-scheme:dark)').matches;
@@ -552,6 +698,37 @@ document.addEventListener('DOMContentLoaded',()=>{
   showScreen('home-screen');
   loadVocab();
 });
+
+// ── LEVEL MODE TOGGLE ──
+function onLevelModeToggle(on){
+  const picker=document.getElementById('level-picker');
+  picker.style.display=on?'block':'none';
+  if(on) renderLevelPicker();
+}
+
+function renderLevelPicker(){
+  const state=appState;
+  const grid=document.getElementById('level-picker-grid');
+  grid.innerHTML='';
+  for(let lv=1;lv<=6;lv++){
+    const total=(VOCAB_DATA&&VOCAB_DATA[lv])?VOCAB_DATA[lv].length:0;
+    const learned=total-unseenCount(state,lv);
+    const isActive=state.currentLevel===lv;
+    const el=document.createElement('div');
+    el.className='lv-opt'+(isActive?' active':'');
+    el.innerHTML=`<div class="lv-opt-num">Lv ${lv}</div><div class="lv-opt-name">${LEVEL_NAMES[lv]}</div><div class="lv-opt-count">${learned}/${total}</div>`;
+    el.onclick=()=>{
+      if(state.currentLevel===lv) return;
+      state.currentLevel=lv;
+      extraBatch=0;
+      saveState(state);
+      renderLevelPicker();
+      renderHome();
+      showToast(`已切換到 Level ${lv} ${LEVEL_NAMES[lv]}`);
+    };
+    grid.appendChild(el);
+  }
+}
 </script>
 </body>
 </html>
