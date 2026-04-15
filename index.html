@@ -77,7 +77,7 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 
 /* LEVEL BANNER */
 .level-banner{background:var(--surf);border-radius:var(--r-lg);padding:var(--sp5) var(--sp6);margin-bottom:var(--sp6);box-shadow:var(--sh-s);border-left:5px solid var(--pri);}
-.level-banner-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp3);}
+.level-banner-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp3);gap:var(--sp3);}
 .level-badge{background:var(--pri);color:var(--tx-inv);padding:var(--sp2) var(--sp5);border-radius:var(--r-full);font-size:var(--text-base);font-weight:700;}
 .level-pct{font-size:var(--text-sm);color:var(--tx-m);font-weight:600;}
 .level-bar{height:10px;background:var(--div);border-radius:var(--r-full);overflow:hidden;}
@@ -247,11 +247,6 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
     <div class="level-banner">
       <div class="level-banner-top">
         <div class="level-badge" id="level-badge">Level 1 基礎</div>
-        <div class="level-pct" id="level-pct">0%</div>
-      </div>
-      <div class="level-bar"><div class="level-bar-fill" id="level-bar-fill" style="width:0%"></div></div>
-      <div class="level-banner-bottom">
-        <div class="level-unlock-hint" id="level-unlock-hint"></div>
         <label class="toggle-wrap" title="自選 Level 模式">
           <span class="toggle-label">自選 Level</span>
           <div class="toggle-switch">
@@ -259,7 +254,10 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
             <span class="toggle-knob"></span>
           </div>
         </label>
+        <div class="level-pct" id="level-pct">0%</div>
       </div>
+      <div class="level-bar"><div class="level-bar-fill" id="level-bar-fill" style="width:0%"></div></div>
+      <div class="level-unlock-hint" id="level-unlock-hint" style="margin-top:var(--sp2)"></div>
       <div class="level-picker" id="level-picker" style="display:none">
         <div class="level-picker-grid" id="level-picker-grid"></div>
         <div class="level-picker-note">💡 切換等級只影響新單字來源，複習任務與箱子進度不受影響。</div>
