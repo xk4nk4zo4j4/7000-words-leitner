@@ -219,32 +219,23 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 
 .flip-card{transform-style:preserve-3d;}
 .card-front,.card-back{transition:opacity .14s ease, transform .48s cubic-bezier(.22,1,.36,1);}
-.card-front{opacity:1;z-index:2;}
-.card-back{opacity:0;z-index:1;pointer-events:none;}
 .flip-card.flipped .card-front{opacity:0;pointer-events:none;}
-.flip-card.flipped .card-back{opacity:1;pointer-events:auto;}
-.flip-card.flipping .card-back{opacity:0;}
 
 
 .fade-mode .flip-card{transform:none !important;transition:none !important;}
 .fade-mode .card-front,.fade-mode .card-back{transform:none !important;transition:opacity .22s ease !important;}
-.fade-mode .card-front{opacity:1;z-index:2;}
-.fade-mode .card-back{opacity:0;z-index:1;pointer-events:none;}
-.fade-mode .flip-card.flipped .card-front{opacity:0;}
-.fade-mode .flip-card.flipped .card-back{opacity:1;pointer-events:auto;}
-
-
-/* Fade flip mode for study card */
+.fade-mode .fade-mode .fade-mode .fade-mode 
 
 
 
-.study-screen{perspective:1200px;-webkit-perspective:1200px;}
-.flip-card{transform-style:preserve-3d;-webkit-transform-style:preserve-3d;perspective:1200px;-webkit-perspective:1200px;will-change:transform;transform:translate3d(0,0,0);-webkit-transform:translate3d(0,0,0);}
-.card-face{backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translate3d(0,0,0);-webkit-transform:translate3d(0,0,0);}
-.card-front{transform:translateZ(1px);-webkit-transform:translateZ(1px);}
-.card-back{transform:rotateY(180deg) translateZ(1px);-webkit-transform:rotateY(180deg) translateZ(1px);}
-.flip-card.flipped{transform:rotateY(180deg) translate3d(0,0,0);-webkit-transform:rotateY(180deg) translate3d(0,0,0);}
-.flip-card.flipping{transform:rotateY(90deg) translate3d(0,0,0);-webkit-transform:rotateY(90deg) translate3d(0,0,0);}
+
+
+
+.flip-card{width:100%;min-height:440px;position:relative;transform-style:preserve-3d;transition:transform .58s cubic-bezier(.22,1,.36,1);cursor:pointer;border-radius:var(--r-xl);will-change:transform;perspective:1200px;}
+.flip-card.flipped{transform:rotateY(180deg);}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--r-xl);padding:var(--sp8);display:flex;flex-direction:column;box-shadow:var(--sh-l);overflow:hidden;}
+.card-front{background:linear-gradient(180deg,var(--surf2),var(--surf));border:2.5px solid var(--bdr);}
+.card-back{background:linear-gradient(180deg,var(--surf),var(--pri-hi));border:2.5px solid var(--pri);transform:rotateY(180deg);}
 
 </style>
 </head>
