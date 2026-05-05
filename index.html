@@ -120,7 +120,7 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--pri),var(--pri-h));border-radius:var(--r-full);transition:width .4s ease;}
 
 /* FLIP CARD */
-.card-scene{perspective:1200px;margin-bottom:var(--sp6);transition:opacity .15s ease;}
+.card-scene{perspective:1200px;margin-bottom:var(--sp6);}
 .flip-card{width:100%;min-height:440px;position:relative;transform-style:preserve-3d;transition:transform .48s cubic-bezier(.22,1,.36,1);cursor:pointer;border-radius:var(--r-xl);will-change:transform;perspective:1200px;}
 .flip-card.flipped{transform:rotateY(180deg);}
 .card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--r-xl);padding:var(--sp8);display:flex;flex-direction:column;box-shadow:var(--sh-l);overflow:hidden;}
@@ -418,6 +418,11 @@ function nextReviewDate(box){
   return d.toISOString().split('T')[0];
 }
 function recordAnswer(state,cardId,correct){
+  if(!state.cards[cardId]){
+    const parts=cardId.split('_');
+    const lv=parseInt(parts[0].slice(1)),idx=parseInt(parts[1]);
+    initCard(state,lv,idx);
+  }
   const c=state.cards[cardId];if(!c)return;
   c.box=correct?Math.min(c.box+1,5):(WRONG_BOX[c.box]||1);
   c.nextReview=nextReviewDate(c.box);saveState(state);
@@ -591,11 +596,10 @@ document.getElementById('reset-modal').addEventListener('click',function(e){if(e
 
 // ── SESSIONS ──
 function launchNew(state,newCards,batchIdx){
-  newCards.forEach(c=>initCard(state,c.level,c.index));saveState(state);
   const lv=state.currentLevel;
   const cards=newCards.map(c=>{
-    const w=VOCAB_DATA[c.level][c.index],sc=state.cards[getCardId(c.level,c.index)];
-    return{...w,id:getCardId(c.level,c.index),box:sc?sc.box:1};
+    const w=VOCAB_DATA[c.level][c.index];
+    return{...w,id:getCardId(c.level,c.index),box:1};
   });
   currentSession={cards,index:0,correct:0,wrong:0,sessionKey:`new_${todayStr()}_${lv}_${batchIdx}`};
   openStudy(`📖 新單字 — Level ${lv} ${LEVEL_NAMES[lv]}`);
@@ -655,17 +659,9 @@ function answerCard(ok){
   const card=currentSession.cards[currentSession.index];
   recordAnswer(appState,card.id,ok);
   if(ok)currentSession.correct++;else currentSession.wrong++;
-  const scene=document.getElementById('card-scene');
-  scene.style.opacity='0';
-  setTimeout(()=>{
-    const fc=document.getElementById('flip-card');
-    fc.classList.remove('flipped');
-    currentSession.index++;
-    renderCard();
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      scene.style.opacity='1';
-    }));
-  },160);
+  const fc=document.getElementById('flip-card');
+  fc.classList.remove('flipped');
+  currentSession.index++;renderCard();
 }
 function endSession(){
   document.getElementById('card-scene').style.display='none';
