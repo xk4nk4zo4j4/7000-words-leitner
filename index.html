@@ -97,6 +97,27 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 .stat-num{font-size:var(--text-lg);font-weight:700;color:var(--tx-col);line-height:1.2;}
 .stat-freq{font-size:.8rem;color:var(--tx-f);margin-top:var(--sp1);}
 
+
+/* BOX WORD LIST MODAL */
+.box-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:300;padding:var(--sp4);opacity:0;pointer-events:none;transition:opacity .2s ease;}
+.box-modal-overlay.open{opacity:1;pointer-events:auto;}
+.box-modal{background:var(--surf);border-radius:var(--r-xl) var(--r-xl) var(--r-lg) var(--r-lg);width:100%;max-width:680px;max-height:75dvh;display:flex;flex-direction:column;box-shadow:var(--sh-l);transform:translateY(40px);transition:transform .25s cubic-bezier(.16,1,.3,1);}
+.box-modal-overlay.open .box-modal{transform:translateY(0);}
+.box-modal-header{display:flex;align-items:center;justify-content:space-between;padding:var(--sp5) var(--sp6);border-bottom:1px solid var(--div);flex-shrink:0;}
+.box-modal-title{font-size:var(--text-lg);font-weight:700;color:var(--tx-col);display:flex;align-items:center;gap:var(--sp3);}
+.box-modal-dot{width:14px;height:14px;border-radius:var(--r-full);flex-shrink:0;}
+.box-modal-close{width:36px;height:36px;border-radius:var(--r-full);background:var(--surf2);border:1.5px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--tx-m);cursor:pointer;transition:all var(--tx);}
+.box-modal-close:hover{background:var(--err-hi);color:var(--err);}
+.box-modal-body{overflow-y:auto;padding:var(--sp4) var(--sp6) var(--sp6);flex:1;}
+.box-word-list{display:flex;flex-direction:column;gap:var(--sp2);margin-top:var(--sp3);}
+.box-word-item{display:flex;align-items:baseline;justify-content:space-between;padding:var(--sp3) var(--sp4);background:var(--surf2);border-radius:var(--r-md);border:1.5px solid var(--bdr);gap:var(--sp4);}
+.box-word-en{font-family:var(--font-display);font-size:var(--text-base);font-weight:700;color:var(--tx-col);}
+.box-word-zh{font-size:var(--text-sm);color:var(--tx-m);text-align:right;flex-shrink:0;}
+.box-modal-empty{text-align:center;padding:var(--sp12) var(--sp4);color:var(--tx-f);font-size:var(--text-base);}
+.stat-box{cursor:pointer;transition:border-color var(--tx),background var(--tx),transform var(--tx),box-shadow var(--tx);}
+.stat-box:hover{border-color:var(--pri);background:var(--pri-hi);transform:translateY(-2px);box-shadow:var(--sh-m);}
+.stat-box:active{transform:scale(.97);}
+
 /* SESSIONS */
 .sessions-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp3);padding-left:var(--sp2);}
 .session-item{background:var(--surf);border-radius:var(--r-lg);padding:var(--sp5) var(--sp6);margin-bottom:var(--sp3);box-shadow:var(--sh-s);border:2px solid var(--bdr);display:flex;align-items:center;gap:var(--sp4);cursor:pointer;transition:all var(--tx);}
@@ -271,11 +292,11 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 
     <div class="section-title">Leitner 學習箱狀態</div>
     <div class="stats-grid">
-      <div class="stat-box"><div class="stat-dot" style="background:var(--b1)"></div><div class="stat-lbl">箱 1</div><div class="stat-num" id="count-box1">0</div><div class="stat-freq">每天</div></div>
-      <div class="stat-box"><div class="stat-dot" style="background:var(--b2)"></div><div class="stat-lbl">箱 2</div><div class="stat-num" id="count-box2">0</div><div class="stat-freq">3 天</div></div>
-      <div class="stat-box"><div class="stat-dot" style="background:var(--b3)"></div><div class="stat-lbl">箱 3</div><div class="stat-num" id="count-box3">0</div><div class="stat-freq">7 天</div></div>
-      <div class="stat-box"><div class="stat-dot" style="background:var(--b4)"></div><div class="stat-lbl">箱 4</div><div class="stat-num" id="count-box4">0</div><div class="stat-freq">14 天</div></div>
-      <div class="stat-box"><div class="stat-dot" style="background:var(--b5)"></div><div class="stat-lbl">箱 5</div><div class="stat-num" id="count-box5">0</div><div class="stat-freq">30 天</div></div>
+      <div class="stat-box" onclick="openBoxModal(1)" role="button" tabindex="0" title="查看箱 1 的單字"><div class="stat-dot" style="background:var(--b1)"></div><div class="stat-lbl">箱 1</div><div class="stat-num" id="count-box1">0</div><div class="stat-freq">每天</div></div>
+      <div class="stat-box" onclick="openBoxModal(2)" role="button" tabindex="0" title="查看箱 2 的單字"><div class="stat-dot" style="background:var(--b2)"></div><div class="stat-lbl">箱 2</div><div class="stat-num" id="count-box2">0</div><div class="stat-freq">3 天</div></div>
+      <div class="stat-box" onclick="openBoxModal(3)" role="button" tabindex="0" title="查看箱 3 的單字"><div class="stat-dot" style="background:var(--b3)"></div><div class="stat-lbl">箱 3</div><div class="stat-num" id="count-box3">0</div><div class="stat-freq">7 天</div></div>
+      <div class="stat-box" onclick="openBoxModal(4)" role="button" tabindex="0" title="查看箱 4 的單字"><div class="stat-dot" style="background:var(--b4)"></div><div class="stat-lbl">箱 4</div><div class="stat-num" id="count-box4">0</div><div class="stat-freq">14 天</div></div>
+      <div class="stat-box" onclick="openBoxModal(5)" role="button" tabindex="0" title="查看箱 5 的單字"><div class="stat-dot" style="background:var(--b5)"></div><div class="stat-lbl">箱 5</div><div class="stat-num" id="count-box5">0</div><div class="stat-freq">30 天</div></div>
     </div>
 
     <div class="sessions-hd">
@@ -340,6 +361,23 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
     <button class="btn btn-primary" onclick="goHome()">◀ 返回首頁</button>
   </div>
 </div>
+
+  <!-- BOX WORD LIST MODAL -->
+  <div class="box-modal-overlay" id="box-modal-overlay" onclick="closeBoxModal(event)">
+    <div class="box-modal">
+      <div class="box-modal-header">
+        <div class="box-modal-title">
+          <div class="box-modal-dot" id="box-modal-dot"></div>
+          <span id="box-modal-title-text">箱 1 — 單字列表</span>
+        </div>
+        <button class="box-modal-close" onclick="closeBoxModal(null)" aria-label="關閉">✕</button>
+      </div>
+      <div class="box-modal-body">
+        <div class="box-word-list" id="box-word-list"></div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <!-- SETTINGS MODAL -->
@@ -668,9 +706,7 @@ function answerCard(ok){
     fc.classList.remove('flipped');
     currentSession.index++;
     renderCard();
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      scene.style.opacity='1';
-    }));
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ scene.style.opacity='1'; }));
   },160);
 }
 function endSession(){
@@ -756,6 +792,37 @@ function renderLevelPicker(){
     grid.appendChild(el);
   }
 }
+
+// ── BOX WORD LIST MODAL ──
+function openBoxModal(boxNum){
+  const state=appState;
+  const boxColors={1:'var(--b1)',2:'var(--b2)',3:'var(--b3)',4:'var(--b4)',5:'var(--b5)'};
+  const freqLabels={1:'每天',2:'每 3 天',3:'每 7 天',4:'每 14 天',5:'每 30 天'};
+  const items=[];
+  Object.values(state.cards).forEach(c=>{
+    if(c.box===boxNum){
+      const w=VOCAB_DATA[c.level]&&VOCAB_DATA[c.level][c.index];
+      if(w) items.push({word:w.word,translation:w.translation});
+    }
+  });
+  items.sort((a,b)=>a.word.localeCompare(b.word));
+  document.getElementById('box-modal-dot').style.background=boxColors[boxNum]||'var(--b1)';
+  document.getElementById('box-modal-title-text').textContent=`箱 ${boxNum}（${freqLabels[boxNum]}）— ${items.length} 個單字`;
+  const list=document.getElementById('box-word-list');
+  list.innerHTML=items.length===0
+    ?'<div class="box-modal-empty">這個箱子目前沒有單字</div>'
+    :items.map(it=>`<div class="box-word-item"><span class="box-word-en">${it.word}</span><span class="box-word-zh">${it.translation}</span></div>`).join('');
+  const overlay=document.getElementById('box-modal-overlay');
+  overlay.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeBoxModal(e){
+  if(e&&e.target!==document.getElementById('box-modal-overlay'))return;
+  document.getElementById('box-modal-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeBoxModal(null); });
+
 </script>
 </body>
 </html>
