@@ -78,7 +78,11 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 /* LEVEL BANNER */
 .level-banner{background:var(--surf);border-radius:var(--r-lg);padding:var(--sp5) var(--sp6);margin-bottom:var(--sp6);box-shadow:var(--sh-s);border:1px solid var(--bdr);border-left:5px solid var(--pri);}
 .level-banner-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp3);gap:var(--sp3);}
-.level-badge{background:var(--pri);color:var(--tx-inv);padding:var(--sp2) var(--sp5);border-radius:var(--r-full);font-size:var(--text-base);font-weight:700;}
+.level-badge{background:var(--pri);color:var(--tx-inv);padding:var(--sp2) var(--sp5);border-radius:var(--r-full);font-size:var(--text-base);font-weight:700;display:inline-flex;align-items:center;gap:var(--sp2);cursor:pointer;transition:background var(--tx),box-shadow var(--tx);user-select:none;}
+.level-badge:hover{background:var(--pri-h);box-shadow:var(--sh-s);}
+.level-badge:active{transform:scale(.97);}
+.level-badge-chevron{transition:transform .22s cubic-bezier(.16,1,.3,1);flex-shrink:0;}
+.level-badge[aria-expanded="true"] .level-badge-chevron{transform:rotate(180deg);}
 .level-pct{font-size:var(--text-sm);color:var(--tx-m);font-weight:600;}
 .level-bar{height:10px;background:var(--div);border-radius:var(--r-full);overflow:hidden;}
 .level-bar-fill{height:100%;background:linear-gradient(90deg,var(--pri),var(--pri-h));border-radius:var(--r-full);transition:width .6s ease;}
@@ -120,7 +124,7 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--pri),var(--pri-h));border-radius:var(--r-full);transition:width .4s ease;}
 
 /* FLIP CARD */
-.card-scene{perspective:1200px;margin-bottom:var(--sp6);}
+.card-scene{perspective:1200px;margin-bottom:var(--sp6);transition:opacity .15s ease;}
 .flip-card{width:100%;min-height:440px;position:relative;transform-style:preserve-3d;transition:transform .48s cubic-bezier(.22,1,.36,1);cursor:pointer;border-radius:var(--r-xl);will-change:transform;perspective:1200px;}
 .flip-card.flipped{transform:rotateY(180deg);}
 .card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--r-xl);padding:var(--sp8);display:flex;flex-direction:column;box-shadow:var(--sh-l);overflow:hidden;}
@@ -249,14 +253,12 @@ button,a{transition:color var(--tx),background var(--tx),box-shadow var(--tx),tr
   <div id="home-content" style="display:none">
     <div class="level-banner">
       <div class="level-banner-top">
-        <div class="level-badge" id="level-badge">Level 1 基礎</div>
-        <label class="toggle-wrap" title="自選 Level 模式">
-          <span class="toggle-label">自選 Level</span>
-          <div class="toggle-switch">
-            <input type="checkbox" id="level-mode-toggle" onchange="onLevelModeToggle(this.checked)">
-            <span class="toggle-knob"></span>
-          </div>
-        </label>
+        <button class="level-badge" id="level-badge" onclick="onLevelBadgeClick()" aria-expanded="false" aria-controls="level-picker">
+          <span id="level-badge-text">Level 1 基礎</span>
+          <svg class="level-badge-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
         <div class="level-pct" id="level-pct">0%</div>
       </div>
       <div class="level-bar"><div class="level-bar-fill" id="level-bar-fill" style="width:0%"></div></div>
@@ -504,15 +506,15 @@ function renderHome(){
   Object.values(state.cards).forEach(c=>cnt[c.box]=(cnt[c.box]||0)+1);
   for(let b=1;b<=5;b++)document.getElementById(`count-box${b}`).textContent=cnt[b];
   const lv=state.currentLevel,pct=Math.round(getLevelAdvancedPct(state,lv)*100);
-  document.getElementById('level-badge').textContent=`Level ${lv}　${LEVEL_NAMES[lv]}`;
+  document.getElementById('level-badge-text').textContent=`Level ${lv}　${LEVEL_NAMES[lv]}`;
   document.getElementById('level-pct').textContent=pct+'%';
   document.getElementById('level-bar-fill').style.width=pct+'%';
   document.getElementById('level-unlock-hint').textContent=lv<6
     ?`達到 80% 單字進入箱 3 以上，即可自動解鎖 Level ${lv+1} ${LEVEL_NAMES[lv+1]}`
     :'🎊 已達最高等級！繼續複習鞏固所有單字';
   // re-render picker if open
-  const tog=document.getElementById('level-mode-toggle');
-  if(tog&&tog.checked) renderLevelPicker();
+  const btn=document.getElementById('level-badge');
+  if(btn&&btn.getAttribute('aria-expanded')==='true') renderLevelPicker();
   renderSessions(state);
 }
 
@@ -659,9 +661,17 @@ function answerCard(ok){
   const card=currentSession.cards[currentSession.index];
   recordAnswer(appState,card.id,ok);
   if(ok)currentSession.correct++;else currentSession.wrong++;
-  const fc=document.getElementById('flip-card');
-  fc.classList.remove('flipped');
-  currentSession.index++;renderCard();
+  const scene=document.getElementById('card-scene');
+  scene.style.opacity='0';
+  setTimeout(()=>{
+    const fc=document.getElementById('flip-card');
+    fc.classList.remove('flipped');
+    currentSession.index++;
+    renderCard();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      scene.style.opacity='1';
+    }));
+  },160);
 }
 function endSession(){
   document.getElementById('card-scene').style.display='none';
@@ -707,8 +717,18 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 // ── LEVEL MODE TOGGLE ──
-function onLevelModeToggle(on){
+function onLevelBadgeClick(){
+  const btn=document.getElementById('level-badge');
   const picker=document.getElementById('level-picker');
+  const open=btn.getAttribute('aria-expanded')==='true';
+  btn.setAttribute('aria-expanded',open?'false':'true');
+  picker.style.display=open?'none':'block';
+  if(!open) renderLevelPicker();
+}
+function onLevelModeToggle(on){
+  const btn=document.getElementById('level-badge');
+  const picker=document.getElementById('level-picker');
+  btn.setAttribute('aria-expanded',on?'true':'false');
   picker.style.display=on?'block':'none';
   if(on) renderLevelPicker();
 }
